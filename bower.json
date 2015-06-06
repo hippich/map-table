@@ -1,0 +1,26 @@
+{
+  "name": "map-table",
+  "version": "0.0.1",
+  "authors": [
+    "Pavel Karoukin <pavel@karoukin.us>"
+  ],
+  "description": "Maps object to a single value based on rules defined as a array/table.",
+  "main": "dist/index.js",
+  "moduleType": [
+    "amd",
+    "node"
+  ],
+  "keywords": [
+    "map",
+    "rules",
+    "table"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
