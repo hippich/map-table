@@ -17,10 +17,19 @@ module.exports = function (grunt) {
                     //}
                 }
             }
+        },
+        mochaTest: {
+            test: {
+                src: ['tests/**/*.js'],
+                options: {
+                    require: 'should'
+                }
+            }
         }
     });
 
     grunt.registerTask('default', [
+        'mochaTest',
         'umd'
     ]);
 };

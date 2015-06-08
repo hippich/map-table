@@ -20,6 +20,10 @@ var MapTable = function MapTable() {
 MapTable.prototype.match = function() {
 };
 
+if (module && module.exports) {
+    module.exports = MapTable;
+}
+
 return MapTable;
 
 }));
