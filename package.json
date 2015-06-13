@@ -1,6 +1,6 @@
 {
   "name": "map-table",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Maps object to a single value based on rules defined as a array/table.",
   "main": "src/index.js",
   "scripts": {
