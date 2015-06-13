@@ -5,17 +5,11 @@ describe('MapTable', function() {
 
     var mapTable;
 
-    var rules = [{
-        id: 1,
-        prop1: 'xyz',
-        prop2: '123',
-        prop3: 'qwe'
-    }, {
-        id: 1,
-        prop1: 'xyz',
-        prop2: '123',
-        prop3: 'qwe'
-    }];
+    var rules = [
+        ['id', 'prop1', 'prop2', 'prop3'],
+        [ 1  , 'xyz'  , '123'  , 'qwe' ] ,
+        [ 2  , 'zyx'  , '321'  , 'ewq' ]
+    ];
 
     beforeEach(function() {
         mapTable = new MapTable(rules);
@@ -23,11 +17,12 @@ describe('MapTable', function() {
 
     it('should instantiate new Map Table.', function() {
         mapTable.should.be.instanceOf(MapTable);
+        mapTable.cols.should.containDeepOrdered(['id', 'prop1', 'prop2', 'prop3']);
+        mapTable.rowToObject([1, 2, 3, 4]).should.containDeepOrdered({ id: 1, prop1: 2, prop2: 3, prop3: 4 });
     });
 
     it('should do simple match', function() {
         var match = mapTable.match({ prop1: 'xyz' });
-
         should.exist(match);
         match.prop1.should.equal('xyz');
         match.id.should.equal(1);
@@ -35,7 +30,6 @@ describe('MapTable', function() {
 
     it('should return null when match not found', function() {
         var match = mapTable.match({ prop1: 'qqqqq' });
-
         should.not.exist(match);
     });
 });
