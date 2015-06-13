@@ -25,11 +25,28 @@ module.exports = function (grunt) {
                     require: 'should'
                 }
             }
+        },
+        release: {
+            options: {
+                additionalFiles: ['bower.json'],
+                commit: true,
+                github: {
+                    repo: 'hippich/map-table',
+                    usernameVar: 'GITHUB_USERNAME',
+                    passwordVar: 'GITHUB_PASSWORD'
+                },
+                tagName: 'v<%= version %>'
+            }
         }
     });
 
     grunt.registerTask('default', [
         'mochaTest',
         'umd'
+    ]);
+
+    grunt.registerTask('publish', [
+        'default',
+        'release'
     ]);
 };
