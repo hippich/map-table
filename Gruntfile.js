@@ -2,6 +2,17 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
+        gitcommit: {
+            release: {
+                options: {
+                    allowEmpty: true,
+                    message: 'Update compiled version'
+                },
+                files: {
+                    src: ['dist/index.js']
+                }
+            }
+        },
         umd: {
             all: {
                 options: {
@@ -47,6 +58,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('publish', [
         'default',
+        'gitcommit:release',
         'release'
     ]);
 };
