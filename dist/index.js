@@ -55,6 +55,16 @@ MapTable.prototype.rowToObject = function(row) {
     return obj;
 };
 
+MapTable.prototype.getTypeOfMatch = function(matchStr) {
+    var type = 'string';
+
+    if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/') {
+        type = 'regexp';
+    }
+
+    return type;
+};
+
 MapTable.prototype.match = function(values) {
     if (!_.isObject(values)) {
         throw new Error('values should be object');
