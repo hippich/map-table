@@ -32,4 +32,12 @@ describe('MapTable', function() {
         var match = mapTable.match({ prop1: 'qqqqq' });
         should.not.exist(match);
     });
+
+    it('should detect plain string match', function() {
+        mapTable.getTypeOfMatch('qwerty123').should.equal('string');
+    });
+
+    it('should detect regex match', function() {
+        mapTable.getTypeOfMatch('/qwerty123/').should.equal('regexp');
+    });
 });
