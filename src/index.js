@@ -45,6 +45,9 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
     if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/') {
         type = 'regexp';
     }
+    else if (matchStr[0] === '>') {
+        type = 'gt';
+    }
 
     return type;
 };

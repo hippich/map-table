@@ -40,4 +40,8 @@ describe('MapTable', function() {
     it('should detect regex match', function() {
         mapTable.getTypeOfMatch('/qwerty123/').should.equal('regexp');
     });
+
+    it('should detect regex match', function() {
+        mapTable.getTypeOfMatch('>123').should.equal('gt');
+    });
 });
