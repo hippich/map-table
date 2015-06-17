@@ -1,6 +1,16 @@
 var MapTable = require('../src/index');
 var should = require('should');
 
+describe('MapTable.prototype', function() {
+    it('should have matchers work correctly', function() {
+        var matchers = MapTable.prototype.matchers;
+        should.exist( matchers.string('asd', 'asd') );
+        should.exist( matchers.regexp('asd', '/^as/') );
+        should.exist( matchers.gt('asd', '>abb') );
+        should.exist( matchers.lt(10, '<11') );
+    });
+});
+
 describe('MapTable', function() {
 
     var mapTable;
@@ -41,7 +51,11 @@ describe('MapTable', function() {
         mapTable.getTypeOfMatch('/qwerty123/').should.equal('regexp');
     });
 
-    it('should detect regex match', function() {
+    it('should detect greater than match', function() {
         mapTable.getTypeOfMatch('>123').should.equal('gt');
+    });
+
+    it('should detect less than match', function() {
+        mapTable.getTypeOfMatch('<123').should.equal('lt');
     });
 });
