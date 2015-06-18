@@ -55,6 +55,25 @@ MapTable.prototype.rowToObject = function(row) {
     return obj;
 };
 
+MapTable.prototype.matchers = {
+    string: function(value, match) {
+        return value === match;
+    },
+    regexp: function(value, match) {
+        var parts = match.split('/');
+        var re = new RegExp(parts[1], parts[2]);
+        return re.exec(value);
+    },
+    gt: function(value, match) {
+        match = match.replace(/^>/, '');
+        return value > match;
+    },
+    lt: function(value, match) {
+        match = match.replace(/^</, '');
+        return value < match;
+    }
+};
+
 MapTable.prototype.getTypeOfMatch = function(matchStr) {
     var type = 'string';
 
@@ -63,6 +82,9 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
     }
     else if (matchStr[0] === '>') {
         type = 'gt';
+    }
+    else if (matchStr[0] === '<') {
+        type = 'lt';
     }
 
     return type;
