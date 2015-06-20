@@ -1,0 +1,19 @@
+{
+  "framework": "mocha",
+  "before_tests": "grunt umd",
+  "src_files": [
+    "node_modules/chai/chai.js",
+    "dist/*",
+    "tests.setup.js",
+    "tests/*.js"
+  ],
+  "launchers": {
+    "node": {
+      "command": "./node_modules/.bin/mocha -R tap tests/*.js",
+      "protocol": "tap"
+    }
+  },
+  "launch_in_dev": [
+    "node"
+  ]
+}

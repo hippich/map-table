@@ -14,10 +14,8 @@
   }
 }(this, function () {
 
-var _ = require('lodash');
-
 var MapTable = function MapTable(rules) {
-    if (!_.isArray(rules)) {
+    if (! Array.isArray(rules)) {
         throw new Error('rules are required for MapTable.');
     }
 
@@ -27,14 +25,41 @@ var MapTable = function MapTable(rules) {
     this.init(rules);
 };
 
-MapTable.prototype.init = function(rules) {
-    rules = _.clone(rules);
+MapTable.prototype.clone = function(obj) {
+    var out, i = 0;
 
-    this.match = _.memoize(MapTable.prototype.match);
+    if (Object.prototype.toString.call(obj) === '[object Array]') {
+        var len = obj.length;
+        out = [];
+
+        for ( ; i < len; i++ ) {
+            out[i] = this.clone(obj[i]);
+        }
+
+        return out;
+    }
+
+    if (typeof obj === 'object') {
+        out = {};
+
+        for ( i in obj ) {
+            out[i] = this.clone(obj[i]);
+        }
+
+        return out;
+    }
+
+    return obj;
+};
+
+MapTable.prototype.init = function(rules) {
+    rules = this.clone(rules);
+
+    this.match = MapTable.prototype.match;
 
     this.cols = rules.shift();
 
-    if (! _.isArray(this.cols)) {
+    if (! Array.isArray(this.cols)) {
         throw new Error('First row of rules array should be array of columns.');
     }
 
@@ -91,14 +116,14 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
 };
 
 MapTable.prototype.match = function(values) {
-    if (!_.isObject(values)) {
+    if (values !== null && typeof values !== 'object') {
         throw new Error('values should be object');
     }
 
     var that = this;
 
     var matchedRule = null;
-    var valueKeys = _.keys(values);
+    var valueKeys = Object.keys(values);
 
     this.rules.some(function(rule) {
         var match = true;
@@ -127,8 +152,10 @@ MapTable.prototype.match = function(values) {
     return this.rowToObject(matchedRule);
 };
 
-if (module && module.exports) {
-    module.exports = MapTable;
+if (!Array.isArray) {
+    Array.isArray = function(arg) {
+        return Object.prototype.toString.call(arg) === '[object Array]';
+    };
 }
 
 return MapTable;

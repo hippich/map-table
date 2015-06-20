@@ -141,7 +141,3 @@ if (!Array.isArray) {
         return Object.prototype.toString.call(arg) === '[object Array]';
     };
 }
-
-if (module && module.exports) {
-    module.exports = MapTable;
-}

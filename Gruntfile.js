@@ -31,10 +31,7 @@ module.exports = function (grunt) {
         },
         mochaTest: {
             test: {
-                src: ['tests/**/*.js'],
-                options: {
-                    require: 'should'
-                }
+                src: ['tests/**/*.js']
             }
         },
         release: {
@@ -46,9 +43,14 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('tests', [
+        'umd',
+        'mochaTest'
+    ]);
+
     grunt.registerTask('default', [
-        'mochaTest',
-        'umd'
+        'umd',
+        'mochaTest'
     ]);
 
     grunt.registerTask('publish', [

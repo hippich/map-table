@@ -2,9 +2,9 @@
   "name": "map-table",
   "version": "0.0.7",
   "description": "Maps object to a single value based on rules defined as a array/table.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "mocha -r should tests/"
+    "test": "./node_modules/.bin/testem"
   },
   "keywords": [
     "rules",
@@ -14,6 +14,7 @@
   "author": "Pavel Karoukin <pavel@karoukin.us> (http://pavel.karoukin.us/)",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^3.0.0",
     "grunt": "^0.4.5",
     "grunt-git": "^0.3.5",
     "grunt-mocha-test": "^0.12.7",
@@ -21,8 +22,7 @@
     "grunt-umd": "^2.3.3",
     "load-grunt-tasks": "^3.2.0",
     "mocha": "^2.2.5",
-    "should": "^6.0.3"
+    "testem": "^0.8.3"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

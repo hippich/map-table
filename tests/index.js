@@ -1,5 +1,13 @@
-var MapTable = require('../src/index');
-var should = require('should');
+/* global MapTable: true, chai: true */
+if (typeof MapTable === 'undefined') {
+    MapTable = require('../dist/index');
+}
+
+if (typeof chai === 'undefined') {
+    chai = require('chai');
+}
+
+var should = chai.should();
 
 describe('MapTable.prototype', function() {
     it('should have matchers work correctly', function() {
@@ -27,8 +35,8 @@ describe('MapTable', function() {
 
     it('should instantiate new Map Table.', function() {
         mapTable.should.be.instanceOf(MapTable);
-        mapTable.cols.should.containDeepOrdered(['id', 'prop1', 'prop2', 'prop3']);
-        mapTable.rowToObject([1, 2, 3, 4]).should.containDeepOrdered({ id: 1, prop1: 2, prop2: 3, prop3: 4 });
+        mapTable.cols.should.deep.equal(['id', 'prop1', 'prop2', 'prop3']);
+        mapTable.rowToObject([1, 2, 3, 4]).should.deep.equal({ id: 1, prop1: 2, prop2: 3, prop3: 4 });
     });
 
     it('should do simple match', function() {
