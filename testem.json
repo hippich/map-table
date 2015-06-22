@@ -6,12 +6,12 @@
     "tests/*.js"
   ],
   "launchers": {
-    "node": {
-      "command": "./node_modules/.bin/mocha --require src/index.js --require node_modules/chai/chai.js -R tap tests/*.js",
+    "mocha": {
+      "command": "./node_modules/.bin/mocha --require src/index.js --require tests.setup.js -R tap tests/*.js",
       "protocol": "tap"
     }
   },
   "launch_in_dev": [
-    "node"
+    "mocha"
   ]
 }
