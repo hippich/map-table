@@ -43,14 +43,9 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('tests', [
-        'umd',
-        'mochaTest'
-    ]);
-
     grunt.registerTask('default', [
-        'umd',
-        'mochaTest'
+        'mochaTest',
+        'umd'
     ]);
 
     grunt.registerTask('publish', [

@@ -14,7 +14,9 @@
   }
 }(this, function () {
 
-var MapTable = function MapTable(rules) {
+/* global MapTable:true */
+
+MapTable = function MapTable(rules) {
     if (! Array.isArray(rules)) {
         throw new Error('rules are required for MapTable.');
     }

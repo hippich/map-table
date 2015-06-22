@@ -1,12 +1,4 @@
 /* global MapTable: true, chai: true */
-if (typeof MapTable === 'undefined') {
-    MapTable = require('../dist/index');
-}
-
-if (typeof chai === 'undefined') {
-    chai = require('chai');
-}
-
 var should = chai.should();
 
 describe('MapTable.prototype', function() {
