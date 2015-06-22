@@ -137,7 +137,10 @@ MapTable.prototype.match = function(values) {
                 return false;
             }
 
-            if (!rule[idx] || rule[idx] !== values[key]) {
+            var matchType = that.getTypeOfMatch(values[key]);
+            var matcher = that.matchers[matchType];
+
+            if (!rule[idx] || !matcher(values[key], rule[idx])) {
                 match = false;
                 return true;
             }
