@@ -18,7 +18,8 @@ describe('MapTable', function() {
     var rules = [
         ['id', 'prop1', 'prop2', 'prop3'],
         [ 1  , 'xyz'  , '123'  , 'qwe' ] ,
-        [ 2  , 'zyx'  , '321'  , 'ewq' ]
+        [ 2  , 'zyx'  , '321'  , 'ewq' ] ,
+        [ 3  , '/abc/', '123'  , 'asd' ]
     ];
 
     beforeEach(function() {
@@ -31,18 +32,7 @@ describe('MapTable', function() {
         mapTable.rowToObject([1, 2, 3, 4]).should.deep.equal({ id: 1, prop1: 2, prop2: 3, prop3: 4 });
     });
 
-    it('should do simple match', function() {
-        var match = mapTable.match({ prop1: 'xyz' });
-        should.exist(match);
-        match.prop1.should.equal('xyz');
-        match.id.should.equal(1);
-    });
-
-    it('should return null when match not found', function() {
-        var match = mapTable.match({ prop1: 'qqqqq' });
-        should.not.exist(match);
-    });
-
+    // Match type detection
     it('should detect plain string match', function() {
         mapTable.getTypeOfMatch('qwerty123').should.equal('string');
     });
@@ -57,5 +47,25 @@ describe('MapTable', function() {
 
     it('should detect less than match', function() {
         mapTable.getTypeOfMatch('<123').should.equal('lt');
+    });
+
+    // Testing matching
+    it('should return null when match not found', function() {
+        var match = mapTable.match({ prop1: 'qqqqq' });
+        should.not.exist(match);
+    });
+
+    it('should do simple match', function() {
+        var match = mapTable.match({ prop1: 'xyz' });
+        should.exist(match);
+        match.prop1.should.equal('xyz');
+        match.id.should.equal(1);
+    });
+
+    it('should do regexp match', function() {
+        var match = mapTable.match({ prop1: 'oabcd' });
+        should.exist(match);
+        match.prop1.should.equal('/abc/');
+        match.id.should.equal(3);
     });
 });
