@@ -2,7 +2,7 @@
   "name": "map-table",
   "version": "0.0.7",
   "description": "Maps object to a single value based on rules defined as a array/table.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "./node_modules/.bin/testem ci -l mocha,phantomjs,firefox"
   },

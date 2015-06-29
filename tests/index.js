@@ -19,7 +19,8 @@ describe('MapTable', function() {
         ['id', 'prop1', 'prop2', 'prop3'],
         [ 1  , 'xyz'  , '123'  , 'qwe' ] ,
         [ 2  , 'zyx'  , '321'  , 'ewq' ] ,
-        [ 3  , '/abc/', '123'  , 'asd' ]
+        [ 3  , '/abc/', '123'  , 'asd' ] ,
+        [ 4  , 'xyz'  , null   , null  ]
     ];
 
     beforeEach(function() {
@@ -58,8 +59,15 @@ describe('MapTable', function() {
     it('should do simple match', function() {
         var match = mapTable.match({ prop1: 'xyz' });
         should.exist(match);
-        match.prop1.should.equal('xyz');
+        match.prop2.should.equal('123');
         match.id.should.equal(1);
+    });
+
+    it('should do simple match with wildcard rule', function() {
+        var match = mapTable.match({ prop1: 'xyz', prop2: '9999' });
+        should.exist(match);
+        should.not.exist(match.prop2);
+        match.id.should.equal(4);
     });
 
     it('should do regexp match', function() {

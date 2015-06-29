@@ -14,6 +14,10 @@ MapTable = function MapTable(rules) {
 MapTable.prototype.clone = function(obj) {
     var out, i = 0;
 
+    if (obj == null) {
+        return obj;
+    }
+
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         var len = obj.length;
         out = [];
@@ -123,9 +127,10 @@ MapTable.prototype.match = function(values) {
                 return false;
             }
 
-            if (!rule[idx]) {
-                match = false;
-                return true;
+            // If key is found, but rule value is null, assume it is wildcard rule match
+            // and skip checking this criterion.
+            if (rule[idx] == null) {
+                return false;
             }
 
             var matchType = that.getTypeOfMatch(rule[idx]);

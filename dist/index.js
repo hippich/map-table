@@ -139,10 +139,15 @@ MapTable.prototype.match = function(values) {
                 return false;
             }
 
-            var matchType = that.getTypeOfMatch(values[key]);
+            if (!rule[idx]) {
+                match = false;
+                return true;
+            }
+
+            var matchType = that.getTypeOfMatch(rule[idx]);
             var matcher = that.matchers[matchType];
 
-            if (!rule[idx] || !matcher(values[key], rule[idx])) {
+            if (!matcher(values[key], rule[idx])) {
                 match = false;
                 return true;
             }
