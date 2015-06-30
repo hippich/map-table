@@ -16,21 +16,25 @@ describe('MapTable', function() {
     var mapTable;
 
     var rules = [
-        ['id', 'prop1', 'prop2', 'prop3'],
-        [ 1  , 'xyz'  , '123'  , 'qwe' ] ,
-        [ 2  , 'zyx'  , '321'  , 'ewq' ] ,
-        [ 3  , '/abc/', '123'  , 'asd' ] ,
-        [ 4  , 'xyz'  , null   , null  ]
+        ['id', 'prop1', 'prop2', 'prop3', 'prop4'],
+        [ 1  , 'xyz'  , '123'  , 'qwe'  , null   ] ,
+        [ 2  , 'zyx'  , '321'  , 'ewq'  , null   ] ,
+        [ 3  , '/abc/', '123'  , 'asd'  , null   ] ,
+        [ 4  , 'xyz'  , null   , null   , null   ]
     ];
 
     beforeEach(function() {
-        mapTable = new MapTable(rules);
+        mapTable = new MapTable(rules, { optionalCols: ['id'] });
     });
 
     it('should instantiate new Map Table.', function() {
         mapTable.should.be.instanceOf(MapTable);
-        mapTable.cols.should.deep.equal(['id', 'prop1', 'prop2', 'prop3']);
-        mapTable.rowToObject([1, 2, 3, 4]).should.deep.equal({ id: 1, prop1: 2, prop2: 3, prop3: 4 });
+        mapTable.cols.should.deep.equal(['id', 'prop1', 'prop2', 'prop3', 'prop4']);
+        mapTable.rowToObject([1, 2, 3, 4, 5]).should.deep.equal({ id: 1, prop1: 2, prop2: 3, prop3: 4, prop4: 5 });
+    });
+
+    it('should correctly identify optional columns', function() {
+        mapTable.optionalCols.should.deep.equal(['id', 'prop4', 'prop2', 'prop3']);
     });
 
     // Match type detection
