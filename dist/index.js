@@ -16,7 +16,11 @@
 
 /* global MapTable:true */
 
-MapTable = function MapTable(rules) {
+MapTable = function MapTable(rules, options) {
+    if (! options) {
+        options = {};
+    }
+
     if (! Array.isArray(rules)) {
         throw new Error('rules are required for MapTable.');
     }
@@ -24,11 +28,15 @@ MapTable = function MapTable(rules) {
     this.rules = [];
     this.cols = [];
 
-    this.init(rules);
+    this.init(rules, options);
 };
 
 MapTable.prototype.clone = function(obj) {
     var out, i = 0;
+
+    if (obj == null) {
+        return obj;
+    }
 
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         var len = obj.length;
@@ -54,18 +62,25 @@ MapTable.prototype.clone = function(obj) {
     return obj;
 };
 
-MapTable.prototype.init = function(rules) {
-    rules = this.clone(rules);
+MapTable.prototype.init = function(rules, options) {
+    if (! options) {
+        options = {};
+    }
 
+    if (options.optionalKeys) {
+        this.optionalKeys = options.optionalKeys;
+    }
+    else {
+        this.optionalKeys = [];
+    }
+
+    this.rules = this.clone(rules);
     this.match = MapTable.prototype.match;
-
-    this.cols = rules.shift();
+    this.cols = this.rules.shift();
 
     if (! Array.isArray(this.cols)) {
         throw new Error('First row of rules array should be array of columns.');
     }
-
-    this.rules = rules;
 };
 
 MapTable.prototype.rowToObject = function(row) {
@@ -117,31 +132,41 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
     return type;
 };
 
-MapTable.prototype.match = function(values) {
+MapTable.prototype.match = function(values, options) {
     if (values !== null && typeof values !== 'object') {
         throw new Error('values should be object');
     }
 
-    var that = this;
+    if (! options) {
+        options = {};
+    }
 
+    var that = this;
+    var optionalKeys = this.optionalKeys.concat( options.optionalKeys || [] );
     var matchedRule = null;
-    var valueKeys = Object.keys(values);
 
     this.rules.some(function(rule) {
         var match = true;
 
-        valueKeys.some(function(key) {
-            var idx = that.cols.indexOf(key);
+        for (var idx = 0; idx < that.cols.length; idx++) {
+            var key = that.cols[idx];
 
-            // If key is not found in the rules table, assume it is not applicable,
-            // and just move on without invalidating match.
-            if (idx < 0) {
-                return false;
+            // If current rule criterion is null, skip it as optional
+            if (rule[idx] == null) {
+                continue;
             }
 
-            if (!rule[idx]) {
-                match = false;
-                return true;
+            // If value passed for this key is null, then check
+            // optionality first, and if it is optional - skip check,
+            // otherwise - fail match.
+            if (values[key] == null) {
+                if (optionalKeys.indexOf(key) > -1) {
+                    continue;
+                }
+                else {
+                    match = false;
+                    break;
+                }
             }
 
             var matchType = that.getTypeOfMatch(rule[idx]);
@@ -149,9 +174,9 @@ MapTable.prototype.match = function(values) {
 
             if (!matcher(values[key], rule[idx])) {
                 match = false;
-                return true;
+                break;
             }
-        });
+        }
 
         if (match) {
             matchedRule = rule;

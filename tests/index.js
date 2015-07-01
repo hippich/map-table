@@ -24,7 +24,7 @@ describe('MapTable', function() {
     ];
 
     beforeEach(function() {
-        mapTable = new MapTable(rules, { optionalCols: ['id'] });
+        mapTable = new MapTable(rules, { optionalKeys: ['id'] });
     });
 
     it('should instantiate new Map Table.', function() {
@@ -33,8 +33,8 @@ describe('MapTable', function() {
         mapTable.rowToObject([1, 2, 3, 4, 5]).should.deep.equal({ id: 1, prop1: 2, prop2: 3, prop3: 4, prop4: 5 });
     });
 
-    it('should correctly identify optional columns', function() {
-        mapTable.optionalCols.should.deep.equal(['id', 'prop4', 'prop2', 'prop3']);
+    it('should correctly store optional keys', function() {
+        mapTable.optionalKeys.should.deep.equal(['id']);
     });
 
     // Match type detection
@@ -61,10 +61,13 @@ describe('MapTable', function() {
     });
 
     it('should do simple match', function() {
-        var match = mapTable.match({ prop1: 'xyz' });
+        var match = mapTable.match({ prop1: 'xyz', prop2: '123', prop3: 'qwe' });
         should.exist(match);
-        match.prop2.should.equal('123');
         match.id.should.equal(1);
+
+        var secondMatch = mapTable.match({ prop1: 'xyz' });
+        should.exist(secondMatch);
+        secondMatch.id.should.equal(4);
     });
 
     it('should do simple match with wildcard rule', function() {
@@ -74,10 +77,15 @@ describe('MapTable', function() {
         match.id.should.equal(4);
     });
 
-    it('should do regexp match', function() {
-        var match = mapTable.match({ prop1: 'oabcd' });
+    it('should do simple match with optional key', function() {
+        var match = mapTable.match({ prop1: 'xyz' }, { optionalKeys: ['prop2', 'prop3'] });
         should.exist(match);
-        match.prop1.should.equal('/abc/');
+        match.id.should.equal(1);
+    });
+
+    it('should do regexp match', function() {
+        var match = mapTable.match({ prop1: 'oabcd', prop2: '123', prop3: 'asd' });
+        should.exist(match);
         match.id.should.equal(3);
     });
 });

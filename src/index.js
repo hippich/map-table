@@ -51,11 +51,11 @@ MapTable.prototype.init = function(rules, options) {
         options = {};
     }
 
-    if (options.optionalCols) {
-        this.optionalCols = options.optionalCols;
+    if (options.optionalKeys) {
+        this.optionalKeys = options.optionalKeys;
     }
     else {
-        this.optionalCols = [];
+        this.optionalKeys = [];
     }
 
     this.rules = this.clone(rules);
@@ -64,16 +64,6 @@ MapTable.prototype.init = function(rules, options) {
 
     if (! Array.isArray(this.cols)) {
         throw new Error('First row of rules array should be array of columns.');
-    }
-
-    // Detect optional columns
-    for (var i = 0; i < this.rules.length; i++) {
-        var cols = this.rules[i];
-        for (var j = 0; j < cols.length; j++) {
-            if (cols[j] == null && this.optionalCols.indexOf(this.cols[j]) === -1) {
-                this.optionalCols.push(this.cols[j]);
-            }
-        }
     }
 };
 
@@ -126,13 +116,17 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
     return type;
 };
 
-MapTable.prototype.match = function(values) {
+MapTable.prototype.match = function(values, options) {
     if (values !== null && typeof values !== 'object') {
         throw new Error('values should be object');
     }
 
-    var that = this;
+    if (! options) {
+        options = {};
+    }
 
+    var that = this;
+    var optionalKeys = this.optionalKeys.concat( options.optionalKeys || [] );
     var matchedRule = null;
 
     this.rules.some(function(rule) {
@@ -150,7 +144,7 @@ MapTable.prototype.match = function(values) {
             // optionality first, and if it is optional - skip check,
             // otherwise - fail match.
             if (values[key] == null) {
-                if (that.optionalCols.indexOf(key) > -1) {
+                if (optionalKeys.indexOf(key) > -1) {
                     continue;
                 }
                 else {
