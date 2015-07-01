@@ -12,9 +12,6 @@ MapTable = function MapTable(rules, options) {
     this.rules = [];
     this.cols = [];
 
-    // Any column having at least one rule with null in it, considered optional
-    this.optionalCols = [];
-
     this.init(rules, options);
 };
 
@@ -154,7 +151,7 @@ MapTable.prototype.match = function(values) {
             // otherwise - fail match.
             if (values[key] == null) {
                 if (that.optionalCols.indexOf(key) > -1) {
-                    return false;
+                    continue;
                 }
                 else {
                     match = false;
