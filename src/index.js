@@ -130,45 +130,43 @@ MapTable.prototype.match = function(values, options) {
     var matchedRule = null;
 
     this.rules.some(function(rule) {
-        var match = true;
-
-        for (var idx = 0; idx < that.cols.length; idx++) {
-            var key = that.cols[idx];
-
-            // If current rule criterion is null, skip it as optional
-            if (rule[idx] == null) {
-                continue;
-            }
-
-            // If value passed for this key is null, then check
-            // optionality first, and if it is optional - skip check,
-            // otherwise - fail match.
-            if (values[key] == null) {
-                if (optionalKeys.indexOf(key) > -1) {
-                    continue;
-                }
-                else {
-                    match = false;
-                    break;
-                }
-            }
-
-            var matchType = that.getTypeOfMatch(rule[idx]);
-            var matcher = that.matchers[matchType];
-
-            if (!matcher(values[key], rule[idx])) {
-                match = false;
-                break;
-            }
-        }
-
-        if (match) {
-            matchedRule = rule;
-            return true;
-        }
+        matchedRule = that.matchRule(rule, values, optionalKeys);
+        return !!matchedRule;
     });
 
     return this.rowToObject(matchedRule);
+};
+
+MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
+    for (var idx = 0; idx < this.cols.length; idx++) {
+        var key = this.cols[idx];
+
+        // If current rule criterion is null, skip it as optional
+        if (rule[idx] == null) {
+            continue;
+        }
+
+        // If value passed for this key is null, then check
+        // optionality first, and if it is optional - skip check,
+        // otherwise - fail match.
+        if (values[key] == null) {
+            if (optionalKeys.indexOf(key) > -1) {
+                continue;
+            }
+            else {
+                return null;
+            }
+        }
+
+        var matchType = this.getTypeOfMatch(rule[idx]);
+        var matcher = this.matchers[matchType];
+
+        if (!matcher(values[key], rule[idx])) {
+            return null;
+        }
+    }
+
+    return rule;
 };
 
 if (!Array.isArray) {
