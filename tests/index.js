@@ -88,4 +88,21 @@ describe('MapTable', function() {
         should.exist(match);
         match.id.should.equal(3);
     });
+
+    it('should call match callbacks', function() {
+        var matchA, matchB;
+
+        mapTable.options.matchCb = function(rule) {
+            matchA = this.rowToObject(rule);
+        };
+
+        mapTable.match({ prop1: 'xyz' }, {
+            matchCb: function(rule) {
+                matchB = this.rowToObject(rule);
+            }
+        });
+
+        matchA.id.should.equal(4);
+        matchB.id.should.equal(4);
+    });
 });

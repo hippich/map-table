@@ -1,5 +1,12 @@
 /* global MapTable:true */
 
+/**
+ * Instantiate MapTable.
+ *
+ * options:
+ * - optionalKeys: array of optional keys when searching for match.
+ * - matchCb: callback called on each matchRule call with rule, values and result.
+ */
 MapTable = function MapTable(rules, options) {
     if (! options) {
         options = {};
@@ -9,6 +16,7 @@ MapTable = function MapTable(rules, options) {
         throw new Error('rules are required for MapTable.');
     }
 
+    this.options = options;
     this.rules = [];
     this.cols = [];
 
@@ -131,6 +139,15 @@ MapTable.prototype.match = function(values, options) {
 
     this.rules.some(function(rule) {
         matchedRule = that.matchRule(rule, values, optionalKeys);
+
+        if (that.options.matchCb) {
+            that.options.matchCb.call(that, rule, values, optionalKeys, !!matchedRule);
+        }
+
+        if (options.matchCb) {
+            options.matchCb.call(that, rule, values, optionalKeys, !!matchedRule);
+        }
+
         return !!matchedRule;
     });
 
