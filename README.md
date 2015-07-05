@@ -16,6 +16,6 @@ var map = new MapTable([
   ['3' , '2', null]
 ]);
 
-console.log(map.match({ x: '1' }).id); // outputs '1'
+console.log(map.match({ x: '1', y: 'a' }).id); // outputs '1'
 console.log(map.match({ x: '2', y: 'xyz' })); // outputs '3'
 ```
