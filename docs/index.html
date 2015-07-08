@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><title>README</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="./docco.css"><link rel="stylesheet" media="all" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600"><script src="./assets/prettify.js"></script><link rel="stylesheet" media="all" href="./assets/prettify.css"><script>window.addEventListener('DOMContentLoaded', function(e) {
+  var items = document.querySelectorAll('pre');
+  [].forEach.call(items, function (item) {
+    if (item.querySelectorAll('code').length > 0) {
+      item.classList.add('prettyprint');
+    }
+  });
+  prettyPrint();
+});
+</script></head><body><div id="readme-container" class="readme"><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="./index.html" class="source"><span class="file_name">README</span></a><a href="./src/index.js.html" class="source "><span class="base_path">src / </span><span class="file_name">index.js</span></a></div></div></div><div><h1 id="rules-engine-based-on-map-table-approach">Rules engine based on map table approach</h1>
+<p>It allows you to setup simple rules set based on the table design. This in turn allows you
+to use spreadsheets as a configuration tool.</p>
+<h3 id="example-">Example:</h3>
+<pre><code class="lang-javascript">var MapTable = require(&#39;map-table&#39;);
+
+var map = new MapTable([
+  [&#39;id&#39;, &#39;x&#39;, &#39;y&#39;],
+  [&#39;1&#39; , &#39;1&#39;, &#39;a&#39;],
+  [&#39;2&#39; , &#39;2&#39;, &#39;b&#39;]
+  [&#39;3&#39; , &#39;2&#39;, null]
+]);
+
+console.log(map.match({ x: &#39;1&#39;, y: &#39;a&#39; }).id); // outputs &#39;1&#39;
+console.log(map.match({ x: &#39;2&#39;, y: &#39;xyz&#39; })); // outputs &#39;3&#39;
+</code></pre>
+
+</div><h3>Version</h3><p>0.0.7</p><h3>Author</h3><p><span class="gravatar"><img src="http://www.gravatar.com/avatar/95c2bba6f0d837dc34c5b3632ce6032d"/><span>Pavel Karoukin &lt;pavel@karoukin.us&gt; (http://pavel.karoukin.us/)</span></span></p><div></div><h3>Files</h3><ul id="artifacts"><li><a href="./src/index.js.html" class="source "><span class="file_name">index.js</span></a></li></ul><h3>Dev Dependencies</h3><ul><li><b>chai:</b><span>^3.0.0</span></li><li><b>docco-ng:</b><span>^0.1.0</span></li><li><b>grunt:</b><span>^0.4.5</span></li><li><b>grunt-git:</b><span>^0.3.5</span></li><li><b>grunt-mocha-test:</b><span>^0.12.7</span></li><li><b>grunt-release:</b><span>^0.12.0</span></li><li><b>grunt-umd:</b><span>^2.3.3</span></li><li><b>load-grunt-tasks:</b><span>^3.2.0</span></li><li><b>mocha:</b><span>^2.2.5</span></li><li><b>testem:</b><span>^0.8.3</span></li></ul><div id="generated">generated Tue Jul 07 2015 22:27:45 GMT-0500 (CDT)  </div></div></body></html>

@@ -4,7 +4,8 @@
   "description": "Maps object to a single value based on rules defined as a array/table.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/testem ci -l mocha,phantomjs,firefox"
+    "test": "./node_modules/.bin/testem ci -l mocha,phantomjs,firefox",
+    "docs": "./node_modules/docco-ng/bin/generate src/index.js"
   },
   "keywords": [
     "rules",
@@ -15,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.0.0",
+    "docco-ng": "^0.1.0",
     "grunt": "^0.4.5",
     "grunt-git": "^0.3.5",
     "grunt-mocha-test": "^0.12.7",

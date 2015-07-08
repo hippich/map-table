@@ -1,0 +1,200 @@
+<!DOCTYPE html><html><head><title>index.js</title><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><link rel="stylesheet" media="all" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600"><link rel="stylesheet" media="all" href="../docco.css"><script src="../assets/prettify.js"></script><link rel="stylesheet" media="all" href="../assets/prettify.css"><script>window.addEventListener('DOMContentLoaded', function(e) {
+  var items = document.querySelectorAll('pre');
+  Array.prototype.forEach.call(items, function (item) {
+    if (item.querySelectorAll('code').length > 0) {
+      item.classList.add('prettyprint');
+    }
+  });
+  prettyPrint();
+});
+</script></head><body><div id="container"><div id="background"></div><div id="jump_to">Jump To &hellip;<div id="jump_wrapper"><div id="jump_page"><a href="../index.html" class="source"><span class="file_name">README</span></a><a href="../src/index.js.html" class="source selected"><span class="base_path">src / </span><span class="file_name">index.js</span></a></div></div></div><table cellpadding="0" cellspacing="0"><thead><tr><th class="docs"><h1>index.js</h1><div class="filepath">src/</div></th><th class="code"></th></tr></thead><tbody><tr id="section-1"><td class="docs"><div class="pilwrap"><a href="#section-1" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>global MapTable:true</p></div><div class="body"></div></div>
+</td><td class="code"><pre class="source-block"><code>
+</code></pre></td></tr><tr id="section-2"><td class="docs"><div class="pilwrap"><a href="#section-2" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Instantiate MapTable.</p></div><div class="body"><p>options:<br />- optionalKeys: array of optional keys when searching for match.<br />- matchCb: callback called on each matchRule call with rule, values and result.</p></div></div>
+</td><td class="code"><pre class="source-block"><code>MapTable = function MapTable(rules, options) {
+    if (! options) {
+        options = {};
+    }
+
+    if (! Array.isArray(rules)) {
+        throw new Error(&#39;rules are required for MapTable.&#39;);
+    }
+
+    this.options = options;
+    this.rules = [];
+    this.cols = [];
+
+    this.init(rules, options);
+};
+
+MapTable.prototype.clone = function(obj) {
+    var out, i = 0;
+
+    if (obj == null) {
+        return obj;
+    }
+
+    if (Object.prototype.toString.call(obj) === &#39;[object Array]&#39;) {
+        var len = obj.length;
+        out = [];
+
+        for ( ; i &lt; len; i++ ) {
+            out[i] = this.clone(obj[i]);
+        }
+
+        return out;
+    }
+
+    if (typeof obj === &#39;object&#39;) {
+        out = {};
+
+        for ( i in obj ) {
+            out[i] = this.clone(obj[i]);
+        }
+
+        return out;
+    }
+
+    return obj;
+};
+
+MapTable.prototype.init = function(rules, options) {
+    if (! options) {
+        options = {};
+    }
+
+    if (options.optionalKeys) {
+        this.optionalKeys = options.optionalKeys;
+    }
+    else {
+        this.optionalKeys = [];
+    }
+
+    this.rules = this.clone(rules);
+    this.match = MapTable.prototype.match;
+    this.cols = this.rules.shift();
+
+    if (! Array.isArray(this.cols)) {
+        throw new Error(&#39;First row of rules array should be array of columns.&#39;);
+    }
+};
+
+MapTable.prototype.rowToObject = function(row) {
+    if (row == null) {
+        return null;
+    }
+
+    var obj = {};
+
+    this.cols.forEach(function(col, idx) {
+        obj[col] = row[idx];
+    });
+
+    return obj;
+};
+
+MapTable.prototype.matchers = {
+    string: function(value, match) {
+        return value === match;
+    },
+    regexp: function(value, match) {
+        var parts = match.split(&#39;/&#39;);
+        var re = new RegExp(parts[1], parts[2]);
+        return re.exec(value);
+    },
+    gt: function(value, match) {
+        match = match.replace(/^&gt;/, &#39;&#39;);
+        return value &gt; match;
+    },
+    lt: function(value, match) {
+        match = match.replace(/^&lt;/, &#39;&#39;);
+        return value &lt; match;
+    }
+};
+
+MapTable.prototype.getTypeOfMatch = function(matchStr) {
+    var type = &#39;string&#39;;
+
+    if (matchStr[0] === &#39;/&#39; &amp;&amp; matchStr[matchStr.length - 1] === &#39;/&#39;) {
+        type = &#39;regexp&#39;;
+    }
+    else if (matchStr[0] === &#39;&gt;&#39;) {
+        type = &#39;gt&#39;;
+    }
+    else if (matchStr[0] === &#39;&lt;&#39;) {
+        type = &#39;lt&#39;;
+    }
+
+    return type;
+};
+
+MapTable.prototype.match = function(values, options) {
+    if (values !== null &amp;&amp; typeof values !== &#39;object&#39;) {
+        throw new Error(&#39;values should be object&#39;);
+    }
+
+    if (! options) {
+        options = {};
+    }
+
+    var that = this;
+    var optionalKeys = this.optionalKeys.concat( options.optionalKeys || [] );
+    var matchedRule = null;
+
+    this.rules.some(function(rule) {
+        matchedRule = that.matchRule(rule, values, optionalKeys);
+
+        if (that.options.matchCb) {
+            that.options.matchCb.call(that, rule, values, optionalKeys, !!matchedRule);
+        }
+
+        if (options.matchCb) {
+            options.matchCb.call(that, rule, values, optionalKeys, !!matchedRule);
+        }
+
+        return !!matchedRule;
+    });
+
+    return this.rowToObject(matchedRule);
+};
+
+MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
+    for (var idx = 0; idx &lt; this.cols.length; idx++) {
+        var key = this.cols[idx];
+
+</code></pre></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><p>If current rule criterion is null, skip it as optional</p>
+
+</td><td class="code"><pre class="source-block"><code>        if (rule[idx] == null) {
+            continue;
+        }
+
+</code></pre></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><p>If value passed for this key is null, then check
+optionality first, and if it is optional - skip check,
+otherwise - fail match.</p>
+
+</td><td class="code"><pre class="source-block"><code>        if (values[key] == null) {
+            if (optionalKeys.indexOf(key) &gt; -1) {
+                continue;
+            }
+            else {
+                return null;
+            }
+        }
+
+        var matchType = this.getTypeOfMatch(rule[idx]);
+        var matcher = this.matchers[matchType];
+
+        if (!matcher(values[key], rule[idx])) {
+            return null;
+        }
+    }
+
+    return rule;
+};
+
+if (!Array.isArray) {
+    Array.isArray = function(arg) {
+        return Object.prototype.toString.call(arg) === &#39;[object Array]&#39;;
+    };
+}
+
+</code></pre></td></tr></tbody></table><div id="generated">generated Tue Jul 07 2015 22:27:45 GMT-0500 (CDT)  </div></div></body></html>
