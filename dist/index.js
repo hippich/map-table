@@ -16,6 +16,13 @@
 
 /* global MapTable:true */
 
+/**
+ * Instantiate MapTable.
+ *
+ * options:
+ * - optionalKeys: array of optional keys when searching for match.
+ * - matchCb: callback called on each matchRule call with rule, values and result.
+ */
 MapTable = function MapTable(rules, options) {
     if (! options) {
         options = {};
@@ -25,6 +32,7 @@ MapTable = function MapTable(rules, options) {
         throw new Error('rules are required for MapTable.');
     }
 
+    this.options = options;
     this.rules = [];
     this.cols = [];
 
@@ -146,45 +154,52 @@ MapTable.prototype.match = function(values, options) {
     var matchedRule = null;
 
     this.rules.some(function(rule) {
-        var match = true;
+        matchedRule = that.matchRule(rule, values, optionalKeys);
 
-        for (var idx = 0; idx < that.cols.length; idx++) {
-            var key = that.cols[idx];
-
-            // If current rule criterion is null, skip it as optional
-            if (rule[idx] == null) {
-                continue;
-            }
-
-            // If value passed for this key is null, then check
-            // optionality first, and if it is optional - skip check,
-            // otherwise - fail match.
-            if (values[key] == null) {
-                if (optionalKeys.indexOf(key) > -1) {
-                    continue;
-                }
-                else {
-                    match = false;
-                    break;
-                }
-            }
-
-            var matchType = that.getTypeOfMatch(rule[idx]);
-            var matcher = that.matchers[matchType];
-
-            if (!matcher(values[key], rule[idx])) {
-                match = false;
-                break;
-            }
+        if (that.options.matchCb) {
+            that.options.matchCb.call(that, rule, values, optionalKeys, !!matchedRule);
         }
 
-        if (match) {
-            matchedRule = rule;
-            return true;
+        if (options.matchCb) {
+            options.matchCb.call(that, rule, values, optionalKeys, !!matchedRule);
         }
+
+        return !!matchedRule;
     });
 
     return this.rowToObject(matchedRule);
+};
+
+MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
+    for (var idx = 0; idx < this.cols.length; idx++) {
+        var key = this.cols[idx];
+
+        // If current rule criterion is null, skip it as optional
+        if (rule[idx] == null) {
+            continue;
+        }
+
+        // If value passed for this key is null, then check
+        // optionality first, and if it is optional - skip check,
+        // otherwise - fail match.
+        if (values[key] == null) {
+            if (optionalKeys.indexOf(key) > -1) {
+                continue;
+            }
+            else {
+                return null;
+            }
+        }
+
+        var matchType = this.getTypeOfMatch(rule[idx]);
+        var matcher = this.matchers[matchType];
+
+        if (!matcher(values[key], rule[idx])) {
+            return null;
+        }
+    }
+
+    return rule;
 };
 
 if (!Array.isArray) {
