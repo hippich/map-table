@@ -57,7 +57,8 @@ MapTable.prototype.clone = function(obj) {
     return obj;
 };
 
-MapTable.prototype.init = function(rules, options) {
+</code></pre></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>(Re-)Init rules engine. Called during instance creation. But also can be called<br />to apply new rules.</p></div><div class="body"></div></div>
+</td><td class="code"><pre class="source-block"><code>MapTable.prototype.init = function(rules, options) {
     if (! options) {
         options = {};
     }
@@ -78,7 +79,8 @@ MapTable.prototype.init = function(rules, options) {
     }
 };
 
-MapTable.prototype.rowToObject = function(row) {
+</code></pre></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Converts row array to object using columns array.</p></div><div class="body"></div></div>
+</td><td class="code"><pre class="source-block"><code>MapTable.prototype.rowToObject = function(row) {
     if (row == null) {
         return null;
     }
@@ -92,7 +94,13 @@ MapTable.prototype.rowToObject = function(row) {
     return obj;
 };
 
-MapTable.prototype.matchers = {
+</code></pre></td></tr><tr id="section-5"><td class="docs"><div class="pilwrap"><a href="#section-5" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Available matchers:</p></div><div class="body"><ul>
+<li><strong>string</strong> - simple match. Case sensitive.</li>
+<li><strong>regexp</strong> - Tries to convert passed string to RegExp and use it to match passed value.</li>
+<li><strong>gt</strong> - simple greater-then matcher. Uses strings like <code>&gt;19.12</code></li>
+<li><strong>lt</strong> - similar to greater-then, less-then matcher. Uses strings like <code>&lt;123.12</code></li>
+</ul></div></div>
+</td><td class="code"><pre class="source-block"><code>MapTable.prototype.matchers = {
     string: function(value, match) {
         return value === match;
     },
@@ -111,7 +119,8 @@ MapTable.prototype.matchers = {
     }
 };
 
-MapTable.prototype.getTypeOfMatch = function(matchStr) {
+</code></pre></td></tr><tr id="section-6"><td class="docs"><div class="pilwrap"><a href="#section-6" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Deduct type of the match based on the string.</p></div><div class="body"></div></div>
+</td><td class="code"><pre class="source-block"><code>MapTable.prototype.getTypeOfMatch = function(matchStr) {
     var type = &#39;string&#39;;
 
     if (matchStr[0] === &#39;/&#39; &amp;&amp; matchStr[matchStr.length - 1] === &#39;/&#39;) {
@@ -127,7 +136,9 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
     return type;
 };
 
-MapTable.prototype.match = function(values, options) {
+</code></pre></td></tr><tr id="section-7"><td class="docs"><div class="pilwrap"><a href="#section-7" class="pilcrow">&#182;</a></div><div class="dox"><div class="summary"><p>Match function. This is used to do actual values match.</p></div><div class="details"><div class="dox_tag_title">Params</div><div class="dox_tag_detail"><span>- </span><span class="dox_type">values</span><span>- Object, with keys matching columns names.</span></div><div class="dox_tag_detail"><span>- </span><span class="dox_type">options</span><span>- Match-specific options:                    - <code>optionalKeys</code> - allows to specify which keys can be optional during this match.
+                   - <code>matchCb</code> - specify match callback.</span></div></div><div class="body"></div></div>
+</td><td class="code"><pre class="source-block"><code>MapTable.prototype.match = function(values, options) {
     if (values !== null &amp;&amp; typeof values !== &#39;object&#39;) {
         throw new Error(&#39;values should be object&#39;);
     }
@@ -161,13 +172,13 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
     for (var idx = 0; idx &lt; this.cols.length; idx++) {
         var key = this.cols[idx];
 
-</code></pre></td></tr><tr id="section-3"><td class="docs"><div class="pilwrap"><a href="#section-3" class="pilcrow">&#182;</a></div><p>If current rule criterion is null, skip it as optional</p>
+</code></pre></td></tr><tr id="section-8"><td class="docs"><div class="pilwrap"><a href="#section-8" class="pilcrow">&#182;</a></div><p>If current rule criterion is null, skip it as optional</p>
 
 </td><td class="code"><pre class="source-block"><code>        if (rule[idx] == null) {
             continue;
         }
 
-</code></pre></td></tr><tr id="section-4"><td class="docs"><div class="pilwrap"><a href="#section-4" class="pilcrow">&#182;</a></div><p>If value passed for this key is null, then check
+</code></pre></td></tr><tr id="section-9"><td class="docs"><div class="pilwrap"><a href="#section-9" class="pilcrow">&#182;</a></div><p>If value passed for this key is null, then check
 optionality first, and if it is optional - skip check,
 otherwise - fail match.</p>
 
@@ -197,4 +208,4 @@ if (!Array.isArray) {
     };
 }
 
-</code></pre></td></tr></tbody></table><div id="generated">generated Tue Jul 07 2015 22:27:45 GMT-0500 (CDT)  </div></div></body></html>
+</code></pre></td></tr></tbody></table><div id="generated">generated Thu Jul 09 2015 22:46:35 GMT-0500 (CDT)  </div></div></body></html>

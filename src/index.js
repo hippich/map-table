@@ -54,6 +54,10 @@ MapTable.prototype.clone = function(obj) {
     return obj;
 };
 
+/**
+ * (Re-)Init rules engine. Called during instance creation. But also can be called
+ * to apply new rules.
+ */
 MapTable.prototype.init = function(rules, options) {
     if (! options) {
         options = {};
@@ -75,6 +79,9 @@ MapTable.prototype.init = function(rules, options) {
     }
 };
 
+/**
+ * Converts row array to object using columns array.
+ */
 MapTable.prototype.rowToObject = function(row) {
     if (row == null) {
         return null;
@@ -89,6 +96,14 @@ MapTable.prototype.rowToObject = function(row) {
     return obj;
 };
 
+/**
+ * Available matchers:
+ *
+ * - **string** - simple match. Case sensitive.
+ * - **regexp** - Tries to convert passed string to RegExp and use it to match passed value.
+ * - **gt** - simple greater-then matcher. Uses strings like `>19.12`
+ * - **lt** - similar to greater-then, less-then matcher. Uses strings like `<123.12`
+ */
 MapTable.prototype.matchers = {
     string: function(value, match) {
         return value === match;
@@ -108,6 +123,9 @@ MapTable.prototype.matchers = {
     }
 };
 
+/**
+ * Deduct type of the match based on the string.
+ */
 MapTable.prototype.getTypeOfMatch = function(matchStr) {
     var type = 'string';
 
@@ -124,6 +142,14 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
     return type;
 };
 
+/**
+ * Match function. This is used to do actual values match.
+ *
+ * @param values - Object, with keys matching columns names.
+ * @param options - Match-specific options:
+ *                    - `optionalKeys` - allows to specify which keys can be optional during this match.
+ *                    - `matchCb` - specify match callback.
+ */
 MapTable.prototype.match = function(values, options) {
     if (values !== null && typeof values !== 'object') {
         throw new Error('values should be object');
