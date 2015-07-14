@@ -17,10 +17,11 @@ describe('MapTable', function() {
 
     var rules = [
         ['id', 'prop1', 'prop2', 'prop3', 'prop4'],
-        [ 1  , 'xyz'  , '123'  , 'qwe'  , null   ] ,
-        [ 2  , 'zyx'  , '321'  , 'ewq'  , null   ] ,
-        [ 3  , '/abc/', '123'  , 'asd'  , null   ] ,
-        [ 4  , 'xyz'  , null   , null   , null   ]
+        [ 1  , 'xyz'  , '123'  , 'qwe'  , null   ],
+        [ 2  , 'zyx'  , '321'  , 'ewq'  , null   ],
+        [ 3  , '/abc/', '123'  , 'asd'  , null   ],
+        [ 4  , 'xyz'  , null   , null   , null   ],
+        [ null,   null, null   , null   , null   ]
     ];
 
     beforeEach(function() {
@@ -30,6 +31,7 @@ describe('MapTable', function() {
     it('should instantiate new Map Table.', function() {
         mapTable.should.be.instanceOf(MapTable);
         mapTable.cols.should.deep.equal(['id', 'prop1', 'prop2', 'prop3', 'prop4']);
+        mapTable.rules.length.should.equal(4);
         mapTable.rowToObject([1, 2, 3, 4, 5]).should.deep.equal({ id: 1, prop1: 2, prop2: 3, prop3: 4, prop4: 5 });
     });
 

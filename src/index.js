@@ -8,50 +8,12 @@
  * - matchCb: callback called on each matchRule call with rule, values and result.
  */
 MapTable = function MapTable(rules, options) {
-    if (! options) {
-        options = {};
-    }
-
     if (! Array.isArray(rules)) {
         throw new Error('rules are required for MapTable.');
     }
 
     this.options = options;
-    this.rules = [];
-    this.cols = [];
-
     this.init(rules, options);
-};
-
-MapTable.prototype.clone = function(obj) {
-    var out, i = 0;
-
-    if (obj == null) {
-        return obj;
-    }
-
-    if (Object.prototype.toString.call(obj) === '[object Array]') {
-        var len = obj.length;
-        out = [];
-
-        for ( ; i < len; i++ ) {
-            out[i] = this.clone(obj[i]);
-        }
-
-        return out;
-    }
-
-    if (typeof obj === 'object') {
-        out = {};
-
-        for ( i in obj ) {
-            out[i] = this.clone(obj[i]);
-        }
-
-        return out;
-    }
-
-    return obj;
 };
 
 /**
@@ -59,6 +21,8 @@ MapTable.prototype.clone = function(obj) {
  * to apply new rules.
  */
 MapTable.prototype.init = function(rules, options) {
+    this.rules = [];
+
     if (! options) {
         options = {};
     }
@@ -70,13 +34,27 @@ MapTable.prototype.init = function(rules, options) {
         this.optionalKeys = [];
     }
 
-    this.rules = this.clone(rules);
-    this.match = MapTable.prototype.match;
-    this.cols = this.rules.shift();
+    // Rules expected to be defined with first row containing columns names
+    this.cols = [].concat(rules[0]);
 
-    if (! Array.isArray(this.cols)) {
-        throw new Error('First row of rules array should be array of columns.');
+    // Next we iterate over left rules rows, and make a copy only of rows
+    // where at least one column has non-null/undefined value
+    for (var i = 1; i < rules.length; i++) {
+        var skip = true;
+
+        for (var j = 0; j < rules[i].length; j++) {
+            if (rules[i][j] != null) {
+                skip = false;
+                break;
+            }
+        }
+
+        if (! skip) {
+            this.rules.push([].concat(rules[i]));
+        }
     }
+
+    this.match = MapTable.prototype.match;
 };
 
 /**
