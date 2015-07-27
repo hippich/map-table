@@ -48,6 +48,11 @@ describe('MapTable', function() {
         mapTable.getTypeOfMatch('/qwerty123/').should.equal('regexp');
     });
 
+    it('should detect string match when RegExp match is not available for usage', function() {
+        mapTable.options.matchers = ['string', 'gt', 'lt'];
+        mapTable.getTypeOfMatch('/qwerty123/').should.equal('string');
+    });
+
     it('should detect greater than match', function() {
         mapTable.getTypeOfMatch('>123').should.equal('gt');
     });

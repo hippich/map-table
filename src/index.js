@@ -12,8 +12,12 @@ MapTable = function MapTable(rules, options) {
         throw new Error('rules are required for MapTable.');
     }
 
+    if (! options) {
+        options = {};
+    }
+
     this.options = options;
-    this.init(rules, options);
+    this.init(rules, this.options);
 };
 
 /**
@@ -32,6 +36,10 @@ MapTable.prototype.init = function(rules, options) {
     }
     else {
         this.optionalKeys = [];
+    }
+
+    if (! Array.isArray(options.matchers)) {
+        options.matchers = Object.keys(this.matchers);
     }
 
     // Rules expected to be defined with first row containing columns names
@@ -105,15 +113,19 @@ MapTable.prototype.matchers = {
  * Deduct type of the match based on the string.
  */
 MapTable.prototype.getTypeOfMatch = function(matchStr) {
-    var type = 'string';
+    var type = false;
 
-    if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/') {
+    if (this.options.matchers.indexOf('string') >= 0) {
+        type = 'string';
+    }
+
+    if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/' && this.options.matchers.indexOf('regexp') >= 0) {
         type = 'regexp';
     }
-    else if (matchStr[0] === '>') {
+    else if (matchStr[0] === '>' && this.options.matchers.indexOf('gt') >= 0) {
         type = 'gt';
     }
-    else if (matchStr[0] === '<') {
+    else if (matchStr[0] === '<' && this.options.matchers.indexOf('lt') >= 0) {
         type = 'lt';
     }
 
@@ -180,6 +192,12 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
         }
 
         var matchType = this.getTypeOfMatch(rule[idx]);
+
+        // If matcher not found - fail matching rule.
+        if (matchType === false) {
+            return null;
+        }
+
         var matcher = this.matchers[matchType];
 
         if (!matcher(values[key], rule[idx])) {
