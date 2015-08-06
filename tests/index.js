@@ -20,7 +20,7 @@ describe('MapTable', function() {
         [ 1  , 'xyz'  , '123'  , 'qwe'  , null   ],
         [ 2  , 'zyx'  , '321'  , 'ewq'  , null   ],
         [ 3  , '/abc/', '123'  , 'asd'  , null   ],
-        [ 4  , 'xyz'  , null   , null   , null   ],
+        [ 4  , 'xyz'  , ''     , ''     , null   ],
         [ null,   null, null   , null   , null   ]
     ];
 
@@ -80,7 +80,7 @@ describe('MapTable', function() {
     it('should do simple match with wildcard rule', function() {
         var match = mapTable.match({ prop1: 'xyz', prop2: '9999' });
         should.exist(match);
-        should.not.exist(match.prop2);
+        should.not.exist(match.prop4);
         match.id.should.equal(4);
     });
 

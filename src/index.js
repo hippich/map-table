@@ -20,6 +20,10 @@ MapTable = function MapTable(rules, options) {
     this.init(rules, this.options);
 };
 
+MapTable.prototype.isEmpty = function(value) {
+    return value == null || value === '';
+};
+
 /**
  * (Re-)Init rules engine. Called during instance creation. But also can be called
  * to apply new rules.
@@ -51,7 +55,7 @@ MapTable.prototype.init = function(rules, options) {
         var skip = true;
 
         for (var j = 0; j < rules[i].length; j++) {
-            if (rules[i][j] != null) {
+            if (! this.isEmpty(rules[i][j])) {
                 skip = false;
                 break;
             }
@@ -175,14 +179,14 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
         var key = this.cols[idx];
 
         // If current rule criterion is null, skip it as optional
-        if (rule[idx] == null) {
+        if (this.isEmpty(rule[idx])) {
             continue;
         }
 
-        // If value passed for this key is null, then check
+        // If value passed for this key is empty/null, then check
         // optionality first, and if it is optional - skip check,
         // otherwise - fail match.
-        if (values[key] == null) {
+        if (this.isEmpty( values[key] )) {
             if (optionalKeys.indexOf(key) > -1) {
                 continue;
             }
