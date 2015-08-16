@@ -77,6 +77,12 @@ describe('MapTable', function() {
         secondMatch.id.should.equal(4);
     });
 
+    it('should allow do supply multiple variants to matcher', function() {
+        var match = mapTable.match({ prop1: ['zzzzzz', 'xyz'] });
+        should.exist(match);
+        match.id.should.equal(4);
+    });
+
     it('should do simple match with wildcard rule', function() {
         var match = mapTable.match({ prop1: 'xyz', prop2: '9999' });
         should.exist(match);
@@ -96,6 +102,7 @@ describe('MapTable', function() {
         match.id.should.equal(3);
     });
 
+    // Callbacks
     it('should call match callbacks', function() {
         var matchA, matchB;
 

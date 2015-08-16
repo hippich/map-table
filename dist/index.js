@@ -28,8 +28,16 @@ MapTable = function MapTable(rules, options) {
         throw new Error('rules are required for MapTable.');
     }
 
+    if (! options) {
+        options = {};
+    }
+
     this.options = options;
-    this.init(rules, options);
+    this.init(rules, this.options);
+};
+
+MapTable.prototype.isEmpty = function(value) {
+    return value == null || value === '';
 };
 
 /**
@@ -50,6 +58,10 @@ MapTable.prototype.init = function(rules, options) {
         this.optionalKeys = [];
     }
 
+    if (! Array.isArray(options.matchers)) {
+        options.matchers = Object.keys(this.matchers);
+    }
+
     // Rules expected to be defined with first row containing columns names
     this.cols = [].concat(rules[0]);
 
@@ -59,7 +71,7 @@ MapTable.prototype.init = function(rules, options) {
         var skip = true;
 
         for (var j = 0; j < rules[i].length; j++) {
-            if (rules[i][j] != null) {
+            if (! this.isEmpty(rules[i][j])) {
                 skip = false;
                 break;
             }
@@ -121,15 +133,19 @@ MapTable.prototype.matchers = {
  * Deduct type of the match based on the string.
  */
 MapTable.prototype.getTypeOfMatch = function(matchStr) {
-    var type = 'string';
+    var type = false;
 
-    if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/') {
+    if (this.options.matchers.indexOf('string') >= 0) {
+        type = 'string';
+    }
+
+    if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/' && this.options.matchers.indexOf('regexp') >= 0) {
         type = 'regexp';
     }
-    else if (matchStr[0] === '>') {
+    else if (matchStr[0] === '>' && this.options.matchers.indexOf('gt') >= 0) {
         type = 'gt';
     }
-    else if (matchStr[0] === '<') {
+    else if (matchStr[0] === '<' && this.options.matchers.indexOf('lt') >= 0) {
         type = 'lt';
     }
 
@@ -179,14 +195,14 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
         var key = this.cols[idx];
 
         // If current rule criterion is null, skip it as optional
-        if (rule[idx] == null) {
+        if (this.isEmpty(rule[idx])) {
             continue;
         }
 
-        // If value passed for this key is null, then check
+        // If value passed for this key is empty/null, then check
         // optionality first, and if it is optional - skip check,
         // otherwise - fail match.
-        if (values[key] == null) {
+        if (this.isEmpty( values[key] )) {
             if (optionalKeys.indexOf(key) > -1) {
                 continue;
             }
@@ -196,6 +212,12 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
         }
 
         var matchType = this.getTypeOfMatch(rule[idx]);
+
+        // If matcher not found - fail matching rule.
+        if (matchType === false) {
+            return null;
+        }
+
         var matcher = this.matchers[matchType];
 
         if (!matcher(values[key], rule[idx])) {

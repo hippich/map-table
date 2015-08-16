@@ -203,8 +203,21 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
         }
 
         var matcher = this.matchers[matchType];
+        var value = values[key];
 
-        if (!matcher(values[key], rule[idx])) {
+        if (! Array.isArray(value)) {
+            value = [value];
+        }
+
+        var matched = false;
+
+        for (var i = 0; i < value.length; i++) {
+            if (matcher(value[i], rule[idx])) {
+                matched = true;
+            }
+        }
+
+        if (! matched) {
             return null;
         }
     }
