@@ -47,7 +47,11 @@ MapTable.prototype.init = function(rules, options) {
     }
 
     // Rules expected to be defined with first row containing columns names
-    this.cols = [].concat(rules[0]);
+    this.cols = [];
+
+    rules[0].forEach(function(col) {
+        this.cols.push(col.toLowerCase());
+    }.bind(this));
 
     // Next we iterate over left rules rows, and make a copy only of rows
     // where at least one column has non-null/undefined value
@@ -148,6 +152,14 @@ MapTable.prototype.match = function(values, options) {
     if (values !== null && typeof values !== 'object') {
         throw new Error('values should be object');
     }
+
+    // Change all object keys to lowercase
+    Object.keys(values).forEach(function(key) {
+        if (key !== key.toLowerCase()) {
+            values[key.toLowerCase()] = values[key];
+            delete values[key];
+        }
+    });
 
     if (! options) {
         options = {};

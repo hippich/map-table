@@ -16,7 +16,7 @@ describe('MapTable', function() {
     var mapTable;
 
     var rules = [
-        ['id', 'prop1', 'prop2', 'prop3', 'prop4'],
+        ['ID', 'Prop1', 'prop2', 'prop3', 'prop4'],
         [ 1  , 'xyz'  , '123'  , 'qwe'  , null   ],
         [ 2  , 'zyx'  , '321'  , 'ewq'  , null   ],
         [ 3  , '/abc/', '123'  , 'asd'  , null   ],
@@ -68,7 +68,7 @@ describe('MapTable', function() {
     });
 
     it('should do simple match', function() {
-        var match = mapTable.match({ prop1: 'xyz', prop2: '123', prop3: 'qwe' });
+        var match = mapTable.match({ prop1: 'xyz', Prop2: '123', prop3: 'qwe' });
         should.exist(match);
         match.id.should.equal(1);
 
