@@ -52,7 +52,7 @@ MapTable.prototype.init = function(rules, options) {
     }
 
     if (options.optionalKeys) {
-        this.optionalKeys = options.optionalKeys;
+        this.optionalKeys = options.optionalKeys.map(function(key) { return key.toLowerCase(); });
     }
     else {
         this.optionalKeys = [];
@@ -63,7 +63,11 @@ MapTable.prototype.init = function(rules, options) {
     }
 
     // Rules expected to be defined with first row containing columns names
-    this.cols = [].concat(rules[0]);
+    this.cols = [];
+
+    rules[0].forEach(function(col) {
+        this.cols.push(col.toLowerCase());
+    }.bind(this));
 
     // Next we iterate over left rules rows, and make a copy only of rows
     // where at least one column has non-null/undefined value
@@ -165,6 +169,14 @@ MapTable.prototype.match = function(values, options) {
         throw new Error('values should be object');
     }
 
+    // Change all object keys to lowercase
+    Object.keys(values).forEach(function(key) {
+        if (key !== key.toLowerCase()) {
+            values[key.toLowerCase()] = values[key];
+            delete values[key];
+        }
+    });
+
     if (! options) {
         options = {};
     }
@@ -219,8 +231,21 @@ MapTable.prototype.matchRule = function(rule, values, optionalKeys) {
         }
 
         var matcher = this.matchers[matchType];
+        var value = values[key];
 
-        if (!matcher(values[key], rule[idx])) {
+        if (! Array.isArray(value)) {
+            value = [value];
+        }
+
+        var matched = false;
+
+        for (var i = 0; i < value.length; i++) {
+            if (matcher(value[i], rule[idx])) {
+                matched = true;
+            }
+        }
+
+        if (! matched) {
             return null;
         }
     }

@@ -36,7 +36,7 @@ MapTable.prototype.init = function(rules, options) {
     }
 
     if (options.optionalKeys) {
-        this.optionalKeys = options.optionalKeys;
+        this.optionalKeys = options.optionalKeys.map(function(key) { return key.toLowerCase(); });
     }
     else {
         this.optionalKeys = [];
