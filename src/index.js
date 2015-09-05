@@ -103,9 +103,18 @@ MapTable.prototype.matchers = {
         return value === match;
     },
     regexp: function(value, match) {
-        var parts = match.split('/');
-        var re = new RegExp(parts[1], parts[2]);
-        return re.exec(value);
+        var parts = match.match(/^\/(.+)\/(i)?$/);
+
+        if (parts) {
+            try {
+                var re = new RegExp(parts[1], parts[2]);
+                return re.exec(value);
+            } catch(e) {
+                return false;
+            }
+        }
+
+        return false;
     },
     gt: function(value, match) {
         match = match.replace(/^>/, '');
@@ -127,7 +136,7 @@ MapTable.prototype.getTypeOfMatch = function(matchStr) {
         type = 'string';
     }
 
-    if (matchStr[0] === '/' && matchStr[matchStr.length - 1] === '/' && this.options.matchers.indexOf('regexp') >= 0) {
+    if (matchStr.match(/^\/.+\/i?$/) && this.options.matchers.indexOf('regexp') >= 0) {
         type = 'regexp';
     }
     else if (matchStr[0] === '>' && this.options.matchers.indexOf('gt') >= 0) {

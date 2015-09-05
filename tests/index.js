@@ -19,7 +19,7 @@ describe('MapTable', function() {
         ['ID', 'Prop1', 'prop2', 'prop3', 'prop4'],
         [ 1  , 'xyz'  , '123'  , 'qwe'  , null   ],
         [ 2  , 'zyx'  , '321'  , 'ewq'  , null   ],
-        [ 3  , '/abc/', '123'  , 'asd'  , null   ],
+        [ 3  , '/\/abc/', '123'  , 'asd'  , null   ],
         [ 4  , 'xyz'  , ''     , ''     , null   ],
         [ null,   null, null   , null   , null   ]
     ];
@@ -46,6 +46,8 @@ describe('MapTable', function() {
 
     it('should detect regex match', function() {
         mapTable.getTypeOfMatch('/qwerty123/').should.equal('regexp');
+        mapTable.getTypeOfMatch('/qwerty123/i').should.equal('regexp');
+        mapTable.getTypeOfMatch('/qwerty123/g').should.equal('string');
     });
 
     it('should detect string match when RegExp match is not available for usage', function() {
@@ -97,7 +99,7 @@ describe('MapTable', function() {
     });
 
     it('should do regexp match', function() {
-        var match = mapTable.match({ prop1: 'oabcd', prop2: '123', prop3: 'asd' });
+        var match = mapTable.match({ prop1: 'o\/abcd', prop2: '123', prop3: 'asd' });
         should.exist(match);
         match.id.should.equal(3);
     });
